@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jáchym Sulovský — Právo, IT &amp; Ekonomie v synergii</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENY ============ */
+:root{
+  --bg:#070B14;
+  --bg-2:#0A1120;
+  --ink:#E8EEF7;
+  --muted:#8496AE;
+  --dim:#5C6E86;
+  --line:rgba(255,255,255,.09);
+  --line-strong:rgba(255,255,255,.16);
+  --glass:rgba(255,255,255,.035);
+  --glass-2:rgba(255,255,255,.06);
+  --blue:#4C8DFF;
+  --emerald:#2FE0A0;
+  --violet:#9B8CFF;
+  --display:'Plus Jakarta Sans',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --pad:clamp(20px,4.5vw,72px);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--display);
+  font-weight:400;
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+  position:relative;
+}
+::selection{background:rgba(76,141,255,.3)}
+
+/* ============ ATMOSFÉRA ============ */
+.ambient{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.5}
+.orb--a{width:52vw;height:52vw;left:-14vw;top:-18vw;background:radial-gradient(circle,rgba(76,141,255,.34),transparent 68%);animation:drift 26s var(--ease) infinite alternate}
+.orb--b{width:46vw;height:46vw;right:-12vw;bottom:-20vw;background:radial-gradient(circle,rgba(47,224,160,.2),transparent 68%);animation:drift 34s var(--ease) infinite alternate-reverse}
+.orb--c{width:30vw;height:30vw;left:46%;top:38%;background:radial-gradient(circle,rgba(155,140,255,.16),transparent 70%);animation:drift 44s var(--ease) infinite alternate}
+@keyframes drift{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(5vw,4vh,0) scale(1.14)}}
+.mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:72px 72px;
+  mask-image:radial-gradient(ellipse 80% 70% at 50% 45%,#000 20%,transparent 78%);
+  -webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 45%,#000 20%,transparent 78%);
+  opacity:.35}
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 120% 100% at 50% 50%,transparent 40%,rgba(3,6,12,.82) 100%)}
+
+/* ============ SCÉNA / SLAJDY ============ */
+.stage{position:fixed;inset:0;z-index:2}
+.slide{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:clamp(72px,9vh,110px) var(--pad) clamp(96px,13vh,130px) calc(var(--pad) + clamp(0px,3vw,44px));
+  opacity:0;pointer-events:none;
+  transform:translate3d(0,0,0) scale(.985);
+  transition:opacity .62s var(--ease),transform .8s var(--ease),filter .62s var(--ease);
+  filter:blur(6px);
+  overflow-y:auto;overflow-x:hidden;
+  scrollbar-width:none;
+}
+.slide::-webkit-scrollbar{display:none}
+.slide.is-prev{transform:translate3d(-5vw,0,0) scale(.97);filter:blur(10px)}
+.slide.is-next{transform:translate3d(5vw,0,0) scale(.97);filter:blur(10px)}
+.slide.is-active{opacity:1;pointer-events:auto;transform:none;filter:blur(0)}
+.slide__inner{width:100%;max-width:1180px;margin:0 auto}
+
+/* vstupní animace prvků */
+[data-r]{opacity:0;transform:translate3d(0,26px,0);transition:opacity .7s var(--ease),transform .9s var(--ease)}
+.slide.is-active [data-r]{opacity:1;transform:none;transition-delay:var(--d,0s)}
+
+/* ============ TYPOGRAFIE ============ */
+.eyebrow{
+  font-family:var(--mono);font-size:.72rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--emerald);display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.eyebrow::after{content:"";height:1px;flex:1;max-width:120px;background:linear-gradient(90deg,rgba(47,224,160,.6),transparent)}
+h1{
+  font-size:clamp(2.6rem,7.4vw,5.6rem);font-weight:800;line-height:1;letter-spacing:-.035em;
+  padding-bottom:.06em}
+h2{font-size:clamp(1.9rem,4.4vw,3.3rem);font-weight:700;line-height:1.04;letter-spacing:-.03em}
+h3{font-size:1.02rem;font-weight:700;letter-spacing:-.01em}
+.lead{font-size:clamp(1rem,1.35vw,1.16rem);line-height:1.62;color:var(--muted);font-weight:300;max-width:60ch}
+h1 + .lead{margin-top:clamp(24px,3.6vh,40px)}
+p{line-height:1.62}
+.grad{background:linear-gradient(104deg,#fff 0%,var(--blue) 46%,var(--emerald) 96%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mono{font-family:var(--mono)}
+.section-head{margin-bottom:clamp(26px,4.4vh,44px)}
+.section-head h2{margin-bottom:16px}
+
+/* ============ HERO ============ */
+.hero{display:grid;grid-template-columns:1.08fr .92fr;gap:clamp(28px,5vw,72px);align-items:center}
+.hero__meta{display:flex;flex-wrap:wrap;gap:10px;margin:clamp(22px,2.8vh,30px) 0 28px}
+.chip{
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;color:var(--muted);
+  padding:7px 13px;border:1px solid var(--line);border-radius:100px;background:var(--glass);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:.35s var(--ease)}
+.chip:hover{color:var(--ink);border-color:var(--line-strong);background:var(--glass-2);transform:translateY(-2px)}
+.hero__cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:8px}
+.btn{
+  font-family:var(--mono);font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;
+  padding:14px 24px;border-radius:100px;border:1px solid var(--line-strong);
+  background:var(--glass);color:var(--ink);cursor:pointer;text-decoration:none;
+  display:inline-flex;align-items:center;gap:10px;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  transition:.4s var(--ease);position:relative;overflow:hidden}
+.btn:hover{border-color:rgba(76,141,255,.7);box-shadow:0 0 0 1px rgba(76,141,255,.25),0 14px 40px -14px rgba(76,141,255,.6);transform:translateY(-2px)}
+.btn--solid{background:linear-gradient(100deg,var(--blue),#6E7BFF);border-color:transparent;color:#050A14;font-weight:700}
+.btn--solid:hover{box-shadow:0 16px 46px -14px rgba(76,141,255,.85)}
+
+/* Vennův diagram — signature */
+.venn{width:100%;max-width:460px;margin-inline:auto;overflow:visible}
+.venn circle{fill:none;stroke-width:1.4;stroke-dasharray:1;stroke-dashoffset:1;
+  transform-box:fill-box;transform-origin:center;
+  animation:draw 2.1s var(--ease) forwards}
+.venn .c1{stroke:var(--blue);animation-delay:.35s}
+.venn .c2{stroke:var(--emerald);animation-delay:.55s}
+.venn .c3{stroke:var(--violet);animation-delay:.75s}
+.venn .fill1{fill:rgba(76,141,255,.09);stroke:none;animation:fade 1.4s var(--ease) 1.5s forwards;opacity:0}
+.venn .fill2{fill:rgba(47,224,160,.08);stroke:none;animation:fade 1.4s var(--ease) 1.65s forwards;opacity:0}
+.venn .fill3{fill:rgba(155,140,255,.08);stroke:none;animation:fade 1.4s var(--ease) 1.8s forwards;opacity:0}
+.venn text{font-family:var(--mono);font-size:9.6px;letter-spacing:.16em;fill:var(--muted);text-transform:uppercase}
+.venn .core{fill:#fff;animation:pulse 3.4s ease-in-out 2.2s infinite;opacity:0}
+.venn__rot{animation:slowspin 90s linear infinite;transform-box:fill-box;transform-origin:center}
+@keyframes draw{to{stroke-dasharray:1;stroke-dashoffset:0}}
+@keyframes fade{to{opacity:1}}
+@keyframes pulse{0%,100%{opacity:.35;r:2.4}50%{opacity:1;r:3.6}}
+@keyframes slowspin{to{transform:rotate(360deg)}}
+
+/* ============ KARTY ============ */
+.grid{display:grid;gap:clamp(12px,1.5vw,18px)}
+.g-2{grid-template-columns:repeat(2,1fr)}
+.g-3{grid-template-columns:repeat(3,1fr)}
+.g-4{grid-template-columns:repeat(4,1fr)}
+.card{
+  position:relative;border:1px solid var(--line);border-radius:18px;
+  background:linear-gradient(150deg,rgba(255,255,255,.055),rgba(255,255,255,.015));
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  padding:clamp(18px,2vw,26px);
+  transition:border-color .45s var(--ease),box-shadow .45s var(--ease),background .45s var(--ease);
+  overflow:hidden;transform-style:preserve-3d}
+.card::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(76,141,255,.16),transparent 62%);
+  opacity:0;transition:opacity .45s var(--ease)}
+.card:hover{border-color:var(--line-strong);box-shadow:0 26px 60px -30px rgba(0,0,0,.9)}
+.card:hover::before{opacity:1}
+.card__k{font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;color:var(--dim);text-transform:uppercase;margin-bottom:14px;display:block}
+.card h3{margin-bottom:9px}
+.card p{font-size:.88rem;color:var(--muted);font-weight:300}
+.card--accent{border-color:rgba(76,141,255,.28)}
+.card--accent .card__k{color:var(--blue)}
+.rule{height:1px;background:var(--line);margin:26px 0}
+
+/* AI panel */
+.band{display:grid;grid-template-columns:1fr 1.3fr;gap:clamp(20px,2.8vw,42px);align-items:start}
+.band h3{font-size:clamp(1.08rem,1.9vw,1.42rem);letter-spacing:-.02em;line-height:1.25;margin-bottom:11px}
+.band__cols{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.7vw,24px)}
+.band__cols>div{border-left:1px solid var(--line);padding-left:clamp(12px,1.2vw,18px)}
+.band__cols .card__k{margin-bottom:10px;color:var(--emerald)}
+.band__cols p{font-size:.84rem}
+
+/* ============ TABY (zkušenosti) ============ */
+.tabs{display:grid;grid-template-columns:300px 1fr;gap:clamp(16px,2.4vw,34px);align-items:start}
+.tablist{display:flex;flex-direction:column;gap:6px;border-left:1px solid var(--line);padding-left:0}
+.tab{
+  all:unset;cursor:pointer;display:block;padding:15px 18px;position:relative;
+  font-size:.94rem;font-weight:500;color:var(--dim);
+  transition:.4s var(--ease);border-radius:0 12px 12px 0}
+.tab span{display:block;font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;color:var(--dim);margin-top:5px;text-transform:uppercase}
+.tab::before{content:"";position:absolute;left:-1px;top:8px;bottom:8px;width:2px;background:transparent;transition:.4s var(--ease)}
+.tab:hover{color:var(--ink);background:rgba(255,255,255,.03)}
+.tab.is-on{color:var(--ink);background:linear-gradient(90deg,rgba(76,141,255,.12),transparent)}
+.tab.is-on::before{background:var(--blue);box-shadow:0 0 14px rgba(76,141,255,.9)}
+.tab.is-on span{color:var(--blue)}
+.tab:focus-visible{outline:2px solid var(--emerald);outline-offset:2px}
+.panel{display:none;animation:panelIn .6s var(--ease)}
+.panel.is-on{display:block}
+@keyframes panelIn{from{opacity:0;transform:translate3d(16px,0,0)}to{opacity:1;transform:none}}
+.panel__role{font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--emerald);margin-bottom:12px}
+.panel h3{font-size:clamp(1.25rem,2.2vw,1.7rem);letter-spacing:-.02em;margin-bottom:14px}
+.panel p{color:var(--muted);font-weight:300;font-size:.95rem;max-width:58ch}
+.bullets{list-style:none;margin-top:20px;display:grid;gap:11px}
+.bullets li{display:flex;gap:13px;font-size:.9rem;color:var(--muted);font-weight:300;line-height:1.5}
+.bullets li::before{content:"";flex:none;width:5px;height:5px;border-radius:50%;background:var(--blue);margin-top:8px;box-shadow:0 0 10px rgba(76,141,255,.9)}
+
+/* ============ PROJEKT / STACK ============ */
+.project{display:grid;grid-template-columns:1.25fr 1fr;gap:clamp(18px,2.4vw,30px);align-items:stretch}
+.stack{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.tag{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;padding:6px 11px;border-radius:7px;
+  border:1px solid var(--line);color:var(--muted);background:rgba(255,255,255,.03);transition:.3s var(--ease)}
+.tag:hover{color:var(--emerald);border-color:rgba(47,224,160,.45)}
+.stat{font-family:var(--mono);font-size:clamp(1.7rem,3.4vw,2.5rem);font-weight:700;letter-spacing:-.03em;line-height:1}
+.stat--b{color:var(--blue)}
+.stat--e{color:var(--emerald)}
+
+/* ============ VIZITKA ============ */
+.closing{display:grid;grid-template-columns:1fr .88fr;gap:clamp(24px,4vw,56px);align-items:center}
+.vcard{
+  border:1px solid var(--line-strong);border-radius:22px;padding:clamp(22px,2.6vw,34px);
+  background:linear-gradient(155deg,rgba(76,141,255,.16),rgba(47,224,160,.07) 55%,rgba(255,255,255,.02));
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  box-shadow:0 40px 90px -46px rgba(0,0,0,.95);transform-style:preserve-3d}
+.vcard__name{font-size:clamp(1.4rem,2.6vw,1.95rem);font-weight:800;letter-spacing:-.03em}
+.vcard__role{font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--emerald);margin-top:8px}
+.contacts{list-style:none;margin-top:26px;display:grid;gap:2px}
+.contacts a,.contacts span{
+  display:flex;align-items:center;gap:14px;padding:13px 0;text-decoration:none;color:var(--ink);
+  font-size:.94rem;border-bottom:1px solid var(--line);transition:.35s var(--ease)}
+.contacts li:last-child a,.contacts li:last-child span{border-bottom:none}
+.contacts a:hover{color:var(--emerald);padding-left:7px}
+.contacts .lbl{font-family:var(--mono);font-size:.6rem;letter-spacing:.16em;color:var(--dim);width:52px;flex:none;text-transform:uppercase}
+.skilllist{display:grid;gap:10px;margin-top:6px}
+.skillrow{display:flex;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+.skillrow .n{font-family:var(--mono);font-size:.66rem;color:var(--dim);width:26px;flex:none}
+.skillrow strong{font-weight:600;font-size:.98rem;flex:none;min-width:132px}
+.skillrow em{font-style:normal;color:var(--muted);font-size:.86rem;font-weight:300}
+
+/* ============ NAVIGACE ============ */
+.rail{position:fixed;left:clamp(12px,2.2vw,30px);top:50%;transform:translateY(-50%);z-index:6;
+  display:flex;flex-direction:column;gap:4px}
+.rail button{all:unset;cursor:pointer;display:flex;align-items:center;gap:11px;padding:7px 4px;
+  font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;color:var(--dim);transition:.4s var(--ease)}
+.rail button i{display:block;width:20px;height:1px;background:currentColor;transition:.45s var(--ease)}
+.rail button:hover{color:var(--muted)}
+.rail button.is-on{color:var(--blue)}
+.rail button.is-on i{width:40px;background:var(--blue);box-shadow:0 0 12px rgba(76,141,255,.9)}
+.rail button:focus-visible{outline:1px solid var(--emerald);outline-offset:3px}
+.rail .lab{opacity:0;transform:translateX(-6px);transition:.4s var(--ease);white-space:nowrap;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis}
+.rail button:hover .lab,.rail button.is-on .lab{opacity:1;transform:none}
+
+.hud{position:fixed;z-index:6;bottom:clamp(18px,3.4vh,34px);right:clamp(16px,3vw,38px);
+  display:flex;align-items:center;gap:14px}
+.nav{all:unset;cursor:pointer;width:46px;height:46px;border-radius:50%;border:1px solid var(--line-strong);
+  display:grid;place-items:center;color:var(--ink);background:var(--glass);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);transition:.4s var(--ease)}
+.nav:hover{border-color:rgba(76,141,255,.75);color:var(--blue);transform:translateY(-2px);box-shadow:0 12px 34px -12px rgba(76,141,255,.7)}
+.nav:disabled{opacity:.24;cursor:not-allowed;transform:none;box-shadow:none;border-color:var(--line);color:var(--muted)}
+.nav:focus-visible{outline:2px solid var(--emerald);outline-offset:3px}
+.count{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;color:var(--dim)}
+.count b{color:var(--ink);font-weight:500}
+.hint{position:fixed;z-index:6;bottom:clamp(18px,3.4vh,34px);left:calc(clamp(12px,2.2vw,30px) + 4px);
+  font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--dim);text-transform:uppercase;
+  display:flex;align-items:center;gap:9px;transition:opacity .5s var(--ease)}
+.key{border:1px solid var(--line);border-radius:5px;padding:3px 7px;color:var(--muted)}
+.bar{position:fixed;top:0;left:0;height:2px;z-index:7;
+  background:linear-gradient(90deg,var(--blue),var(--emerald));width:0;
+  transition:width .7s var(--ease);box-shadow:0 0 16px rgba(76,141,255,.8)}
+
+/* ============ RESPONZIVITA ============ */
+@media (max-width:1000px){
+  .hero,.project,.closing{grid-template-columns:1fr}
+  .hero{gap:26px}
+  .venn{max-width:330px;order:-1}
+  .tabs{grid-template-columns:1fr}
+  .tablist{flex-direction:row;overflow-x:auto;border-left:none;border-bottom:1px solid var(--line);padding-bottom:2px;scrollbar-width:none}
+  .tablist::-webkit-scrollbar{display:none}
+  .tab{flex:none;padding:12px 15px;border-radius:12px 12px 0 0}
+  .tab::before{left:8px;right:8px;top:auto;bottom:-1px;width:auto;height:2px}
+  .g-3,.g-4{grid-template-columns:repeat(2,1fr)}
+  .band{grid-template-columns:1fr;gap:22px}
+  .band__cols{grid-template-columns:1fr}
+  .band__cols>div{border-left:none;border-top:1px solid var(--line);padding-left:0;padding-top:14px}
+  .rail{display:none}
+  .hint{display:none}
+  .slide{padding-left:var(--pad);padding-right:var(--pad)}
+}
+@media (max-width:600px){
+  .g-2,.g-3,.g-4{grid-template-columns:1fr}
+  .skillrow{flex-wrap:wrap;gap:6px}
+  .skillrow strong{min-width:0;width:100%}
+  .slide{padding-top:56px;padding-bottom:104px}
+}
+/* boční lišta má vlastní pruh — obsah slajdu do něj nikdy nezasahuje */
+@media (min-width:1181px){
+  .slide{padding-left:224px}
+  .rail{width:176px}
+  .rail button{width:100%}
+}
+@media (max-width:1180px){
+  .rail{display:none}
+  .hint{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.15s!important}
+  .slide{filter:none!important}
+  .venn circle{stroke-dashoffset:0}
+  .venn .fill1,.venn .fill2,.venn .fill3,.venn .core{opacity:1}
+}
+</style>
+</head>
+<body>
+
+<div class="ambient" aria-hidden="true">
+  <div class="orb orb--a"></div><div class="orb orb--b"></div><div class="orb orb--c"></div>
+</div>
+<div class="mesh" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+<div class="bar" id="bar" aria-hidden="true"></div>
+
+<nav class="rail" id="rail" aria-label="Přechod na slajd"></nav>
+
+<main class="stage" id="stage">
+
+  <!-- ===== 01 ÚVOD ===== -->
+  <section class="slide" aria-label="Úvod">
+    <div class="slide__inner">
+      <div class="hero">
+        <div>
+          <div class="eyebrow" data-r style="--d:.05s">§ 01 — Jáchym Sulovský</div>
+          <h1 data-r style="--d:.12s">Právo, IT<br>&amp; ekonomie<br><span class="grad">v synergii.</span></h1>
+          <p class="lead" data-r style="--d:.22s" >Studuji hospodářskou kriminalitu a paralelně stavím software. AI pro mě není zkratka k hotové odpovědi, ale motor, se kterým prototypuji, škáluji a navrhuji procesy — tak, jak jsem to zkusil při práci na AI guidelines v CLA IT solutions.</p>
+          <div class="hero__meta" data-r style="--d:.3s">
+            <span class="chip">17 let</span>
+            <span class="chip">Liberec</span>
+            <span class="chip">Střední právní škola · 3. ročník</span>
+            <span class="chip">maturita 2028</span>
+            <span class="chip">AI &amp; vibecoding</span>
+          </div>
+          <div class="hero__cta" data-r style="--d:.38s">
+            <button class="btn btn--solid" data-go="1">Projít prezentaci <span aria-hidden="true">→</span></button>
+            <a class="btn" href="mailto:jachym@sulovsky.com">jachym@sulovsky.com</a>
+          </div>
+        </div>
+        <div data-r style="--d:.2s">
+          <svg class="venn" viewBox="0 0 300 280" role="img" aria-label="Vennův diagram: průnik práva, IT a ekonomie">
+            <g class="venn__rot">
+              <circle class="fill1" cx="112" cy="120" r="74"></circle>
+              <circle class="fill2" cx="188" cy="120" r="74"></circle>
+              <circle class="fill3" cx="150" cy="186" r="74"></circle>
+              <circle class="c1" cx="112" cy="120" r="74" pathLength="1"></circle>
+              <circle class="c2" cx="188" cy="120" r="74" pathLength="1"></circle>
+              <circle class="c3" cx="150" cy="186" r="74" pathLength="1"></circle>
+              <circle class="core" cx="150" cy="142" r="3"></circle>
+            </g>
+            <text x="52" y="52" text-anchor="middle">Právo</text>
+            <text x="250" y="52" text-anchor="middle">IT</text>
+            <text x="150" y="272" text-anchor="middle">Ekonomie</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 02 KDO JSEM ===== -->
+  <section class="slide" aria-label="Kdo jsem a vzdělání">
+    <div class="slide__inner">
+      <div class="section-head">
+        <div class="eyebrow" data-r style="--d:.05s">§ 02 — Kdo jsem &amp; vzdělání</div>
+        <h2 data-r style="--d:.1s">Učím se rozumět pravidlům —<br>a nástroje si k nim postavím sám.</h2>
+        <p class="lead" data-r style="--d:.18s">Jsem student třetího ročníku Střední právní školy v Liberci, obor hospodářská kriminalita, maturita v roce 2028. Nestavím se do role hotového právníka — regulaci a zákony studuji proto, abych jim skutečně rozuměl. Vedle právních předmětů mě nejvíce zajímá to, co dělá právo použitelným v praxi: čísla, motivace lidí a nástroje, kterými se dá práce zrychlit.</p>
+      </div>
+      <div class="grid g-4">
+        <article class="card card--accent tilt" data-r style="--d:.26s">
+          <span class="card__k">Hlavní obor</span>
+          <h3>Hospodářská kriminalita</h3>
+          <p>Jak vzniká a jak se odhaluje ekonomická trestná činnost — od skutkové podstaty k důkazu.</p>
+        </article>
+        <article class="card tilt" data-r style="--d:.32s">
+          <span class="card__k">Kontext</span>
+          <h3>Makroekonomie</h3>
+          <p>Přehled o tom, co hýbe trhy a rozpočty. Bez ekonomie je hospodářská kriminalita jen text zákona.</p>
+        </article>
+        <article class="card tilt" data-r style="--d:.38s">
+          <span class="card__k">Řemeslo</span>
+          <h3>Účetnictví</h3>
+          <p>Čtení výkazů a účetních vazeb. Tady se ekonomický trestný čin obvykle prozradí jako první.</p>
+        </article>
+        <article class="card tilt" data-r style="--d:.44s">
+          <span class="card__k">Lidský faktor</span>
+          <h3>Psychologie</h3>
+          <p>Motiv, jednání a komunikace — užitečné u výslechu, u klienta i v týmu.</p>
+        </article>
+      </div>
+      <div class="rule" data-r style="--d:.5s"></div>
+      <article class="card card--accent tilt band" data-r style="--d:.54s">
+        <div>
+          <span class="card__k">AI jako pilíř, ne zkratka</span>
+          <h3>S AI nehledám hotové odpovědi.<br>Staví mi s ní procesy.</h3>
+          <p>Zajímá mě architektura celého řešení: co má model dělat, kde má hranice, jak se jeho výstup kontroluje a jak z jednorázového pokusu udělat postup, který použije i někdo jiný.</p>
+        </div>
+        <div class="band__cols">
+          <div>
+            <span class="card__k">01 Prototypování</span>
+            <p>Od nápadu k funkční verzi během hodin. Rychle zjistím, jestli má věc smysl, než do ní investuji dny.</p>
+          </div>
+          <div>
+            <span class="card__k">02 Škálování</span>
+            <p>Co jednou funguje, převedu do opakovatelného postupu — s jasným zadáním, kontrolou a předvídatelným výstupem.</p>
+          </div>
+          <div>
+            <span class="card__k">03 Pravidla</span>
+            <p>Na AI guidelines v CLA IT solutions jsem si vyzkoušel, jak se z praxe stávají pravidla, kterými se řídí ostatní.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== 03 ZKUŠENOSTI ===== -->
+  <section class="slide" aria-label="Pracovní zkušenosti">
+    <div class="slide__inner">
+      <div class="section-head">
+        <div class="eyebrow" data-r style="--d:.05s">§ 03 — Pracovní zkušenosti</div>
+        <h2 data-r style="--d:.1s">Praxe na obou stranách:<br>v IT firmě i v advokacii.</h2>
+      </div>
+      <div class="tabs" data-r style="--d:.2s">
+        <div class="tablist" role="tablist" aria-label="Zaměstnavatelé a praxe">
+          <button class="tab is-on" role="tab" aria-selected="true" data-tab="0">CLA IT solutions<span>AI guidelines · DORA</span></button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="1">CLA LAW<span>stáž · rešerše</span></button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="2">Megaknihy<span>brigáda</span></button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="3">Mercuria<span>brigáda</span></button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="4">Parkoviště Ještěd<span>brigáda</span></button>
+        </div>
+        <div class="panels">
+          <div class="panel is-on" role="tabpanel" data-panel="0">
+            <div class="panel__role">IT &amp; compliance</div>
+            <h3>CLA IT solutions</h3>
+            <p>Pracuji na tématech, kde se potkává technologie s regulací — tedy přesně tam, kam míří moje studium.</p>
+            <ul class="bullets">
+              <li>Podíl na tvorbě interních AI guidelines — pravidla pro bezpečné a smysluplné používání AI nástrojů v praxi.</li>
+              <li>Práce se směrnicí DORA (digitální operační odolnost finančního sektoru) a jejím převodem do konkrétních požadavků.</li>
+              <li>Denní kontakt s tím, jak regulace dopadá na reálné IT procesy, ne jen na papír.</li>
+            </ul>
+          </div>
+          <div class="panel" role="tabpanel" data-panel="1">
+            <div class="panel__role">Právní stáž</div>
+            <h3>CLA LAW</h3>
+            <p>Stáž v právním týmu, při které jsem si poprvé vyzkoušel právní rešerši na živém veřejném tématu.</p>
+            <ul class="bullets">
+              <li>Rešerše podkladů pro petici týkající se tramvajové dráhy.</li>
+              <li>Práce se zdroji, jejich ověřování a shrnutí do použitelného výstupu.</li>
+              <li>Zkušenost s tím, jak se právní argument staví pro laického adresáta.</li>
+            </ul>
+          </div>
+          <div class="panel" role="tabpanel" data-panel="2">
+            <div class="panel__role">Brigáda</div>
+            <h3>Megaknihy</h3>
+            <p>Zkušenost z reálného provozu: tempo, spolehlivost a odpovědnost za vlastní část práce.</p>
+            <ul class="bullets">
+              <li>Práce v týmu podle jasně nastavených postupů.</li>
+              <li>Samostatnost a dochvilnost jako základní podmínka, ne bonus.</li>
+            </ul>
+          </div>
+          <div class="panel" role="tabpanel" data-panel="3">
+            <div class="panel__role">Brigáda</div>
+            <h3>Mercuria</h3>
+            <p>Další zkušenost z prostředí, kde se výsledek pozná okamžitě a výmluvy nepomáhají.</p>
+            <ul class="bullets">
+              <li>Plnění zadání v daném čase a kvalitě.</li>
+              <li>Komunikace s kolegy i nadřízenými napříč rolemi.</li>
+            </ul>
+          </div>
+          <div class="panel" role="tabpanel" data-panel="4">
+            <div class="panel__role">Brigáda · provoz</div>
+            <h3>Parkoviště Ještěd</h3>
+            <p>Organizoval jsem dopravu a odbavování lidí ve špičce. Nárazový provoz, kde se rozhoduje na místě a plán platí jen do prvního neočekávaného auta.</p>
+            <ul class="bullets">
+              <li>Řízení příjezdů a odjezdů tak, aby se provoz nezasekl.</li>
+              <li>Přímý kontakt se zákazníky — i s těmi, kteří přijeli ve špatné náladě.</li>
+              <li>Odpovědnost za hotovost a hladký průběh celé směny.</li>
+              <li>Naučilo mě to pracovat ve dvou režimech: soustředěně u kódu i improvizovaně v chaosu.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 04 PROJEKTY ===== -->
+  <section class="slide" aria-label="Vlastní projekty a technické dovednosti">
+    <div class="slide__inner">
+      <div class="section-head">
+        <div class="eyebrow" data-r style="--d:.05s">§ 04 — Vlastní projekty &amp; tech</div>
+        <h2 data-r style="--d:.1s">Co si nepostavím,<br>to nepochopím.</h2>
+      </div>
+      <div class="project">
+        <article class="card card--accent tilt" data-r style="--d:.2s">
+          <span class="card__k">Vlastní software</span>
+          <h3 style="font-size:clamp(1.3rem,2.4vw,1.8rem);letter-spacing:-.02em">Time2Invoice</h3>
+          <p style="font-size:.95rem;margin-top:6px">Aplikace pro evidenci času a fakturaci, postavená jako offline‑first: funguje bez internetu, data zůstávají u uživatele v lokální databázi.</p>
+          <ul class="bullets" style="margin-top:18px">
+            <li>Python jako jádro aplikace, s logikou oddělenou od rozhraní.</li>
+            <li>SQLite jako lokální datová vrstva — žádný server, žádná závislost na cloudu.</li>
+            <li>Navrhoval jsem i logiku procesu, ne jen kód: od zadání času k výstupu faktury.</li>
+            <li>Prezentační vrstvu volím podle potřeby projektu — architektura je udělaná tak, aby ji výměna technologie nerozbila.</li>
+          </ul>
+          <div class="stack">
+            <span class="tag">Python</span><span class="tag">SQLite</span><span class="tag">offline-first</span><span class="tag">oddělené vrstvy</span>
+          </div>
+        </article>
+        <div class="grid" style="align-content:stretch">
+          <article class="card tilt" data-r style="--d:.28s">
+            <span class="card__k">Trhy · paper trading</span>
+            <div class="stat stat--e" style="margin-bottom:12px">6 měsíců</div>
+            <h3>Studium trhů nanečisto</h3>
+            <p>Půl roku se učím čtení trhů a obchodních strategií — zatím výhradně na paper tradingu, tedy bez reálných peněz. Trénuji na tom hlavně práci s rizikem, disciplínu a přiznání vlastní chyby.</p>
+          </article>
+          <article class="card tilt" data-r style="--d:.36s">
+            <span class="card__k">AI v praxi</span>
+            <h3>Vibecoding &amp; architektura promptů</h3>
+            <p>AI neberu jako černou skříňku. Rozpadám zadání na kroky, stavím kontext, kontroluji výstup a z fungujícího postupu dělám šablonu. Prototyp tak vznikne v hodinách místo týdnů — a zůstane po něm proces, ne jen kód.</p>
+            <div class="stack">
+              <span class="tag">architektura promptů</span><span class="tag">vibecoding</span><span class="tag">rapid prototyping</span><span class="tag">kontrola výstupu</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 05 SOFT SKILLS + KONTAKT ===== -->
+  <section class="slide" aria-label="Soft skills, cíle a kontakt">
+    <div class="slide__inner">
+      <div class="section-head">
+        <div class="eyebrow" data-r style="--d:.05s">§ 05 — Soft skills, cíle &amp; kontakt</div>
+        <h2 data-r style="--d:.1s">Kam to celé míří.</h2>
+      </div>
+      <div class="closing">
+        <div>
+          <div class="skilllist">
+            <div class="skillrow" data-r style="--d:.2s"><span class="n">01</span><strong>Proaktivita</strong><em>Nečekám na zadání — když vidím problém, přinesu i návrh řešení.</em></div>
+            <div class="skillrow" data-r style="--d:.26s"><span class="n">02</span><strong>Dva režimy práce</strong><em>Zvládnu hluboké soustředění nad kódem i nárazový provoz, kde se rozhoduje na místě.</em></div>
+            <div class="skillrow" data-r style="--d:.32s"><span class="n">03</span><strong>Sport &amp; příroda</strong><em>Odkud čerpám energii a kde si urovnám myšlenky.</em></div>
+            <div class="skillrow" data-r style="--d:.38s"><span class="n">04</span><strong>Angličtina</strong><em>Úroveň B2–C1 — technická i právní dokumentace bez překladače.</em></div>
+            <div class="skillrow" data-r style="--d:.44s"><span class="n">05</span><strong>Němčina</strong><em>Základní úroveň, pracuji na ní.</em></div>
+          </div>
+          <p class="lead" style="--d:.52s;margin-top:28px" data-r>Nejbližší cíl je jasný: dotáhnout studium a maturitu v roce 2028. Dál mě zajímá pomezí regulace a technologií — compliance, AI governance a hospodářská kriminalita. Chci rozumět pravidlům i systému, který se podle nich má chovat, a zatím se to učím na každém zadání, které dostanu.</p>
+        </div>
+        <div class="vcard tilt" data-r style="--d:.3s">
+          <div class="vcard__name">Jáchym Sulovský</div>
+          <div class="vcard__role">právo · IT · ekonomie</div>
+          <ul class="contacts">
+            <li><a href="mailto:jachym@sulovsky.com"><span class="lbl">Mail</span>jachym@sulovsky.com</a></li>
+            <li><a href="tel:+420730807738"><span class="lbl">Tel</span>+420 730 807 738</a></li>
+            <li><span><span class="lbl">Místo</span>Liberec, Česká republika</span></li>
+          </ul>
+          <div class="hero__cta" style="margin-top:26px">
+            <a class="btn btn--solid" href="mailto:jachym@sulovsky.com">Napsat mi <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="hint" id="hint" aria-hidden="true"><span class="key">←</span><span class="key">→</span> nebo scroll</div>
+
+<div class="hud">
+  <span class="count" aria-live="polite"><b id="cur">01</b> / <span id="tot">05</span></span>
+  <button class="nav" id="prev" aria-label="Předchozí slajd">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <button class="nav" id="next" aria-label="Další slajd">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+  </button>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var labels = ['Úvod','Kdo jsem','Zkušenosti','Projekty','Kontakt'];
+  var total  = slides.length;
+  var index  = 0;
+  var locked = false;
+
+  var rail  = document.getElementById('rail');
+  var bar   = document.getElementById('bar');
+  var cur   = document.getElementById('cur');
+  var tot   = document.getElementById('tot');
+  var prevB = document.getElementById('prev');
+  var nextB = document.getElementById('next');
+  var hint  = document.getElementById('hint');
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* --- boční lišta --- */
+  slides.forEach(function(s, i){
+    var b = document.createElement('button');
+    b.innerHTML = '<span>' + String(i + 1).padStart(2, '0') + '</span><i></i><span class="lab">' + labels[i] + '</span>';
+    b.setAttribute('aria-label', 'Slajd ' + (i + 1) + ': ' + labels[i]);
+    b.addEventListener('click', function(){ go(i); });
+    rail.appendChild(b);
+  });
+  var dots = Array.prototype.slice.call(rail.children);
+  tot.textContent = String(total).padStart(2, '0');
+
+  function pad(n){ return String(n).padStart(2, '0'); }
+
+  function render(){
+    slides.forEach(function(s, i){
+      s.classList.remove('is-active', 'is-prev', 'is-next');
+      if (i === index) s.classList.add('is-active');
+      else if (i < index) s.classList.add('is-prev');
+      else s.classList.add('is-next');
+      s.setAttribute('aria-hidden', i === index ? 'false' : 'true');
+    });
+    dots.forEach(function(d, i){
+      d.classList.toggle('is-on', i === index);
+    });
+    bar.style.width = ((index + 1) / total * 100) + '%';
+    cur.textContent = pad(index + 1);
+    prevB.disabled = index === 0;
+    nextB.disabled = index === total - 1;
+    if (hint) hint.style.opacity = index === 0 ? '1' : '0';
+    slides[index].scrollTop = 0;
+  }
+
+  function go(i){
+    if (i < 0 || i > total - 1 || i === index || locked) return;
+    index = i;
+    locked = true;
+    render();
+    window.setTimeout(function(){ locked = false; }, reduce ? 120 : 640);
+  }
+  function step(d){ go(index + d); }
+
+  prevB.addEventListener('click', function(){ step(-1); });
+  nextB.addEventListener('click', function(){ step(1); });
+  document.querySelectorAll('[data-go]').forEach(function(el){
+    el.addEventListener('click', function(){ go(parseInt(el.getAttribute('data-go'), 10)); });
+  });
+
+  /* --- klávesnice --- */
+  document.addEventListener('keydown', function(e){
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown' || k === ' ') { e.preventDefault(); step(1); }
+    else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp') { e.preventDefault(); step(-1); }
+    else if (k === 'Home') { e.preventDefault(); go(0); }
+    else if (k === 'End') { e.preventDefault(); go(total - 1); }
+  });
+
+  /* --- scroll (respektuje vnitřní scroll dlouhého slajdu) --- */
+  var wheelLock = false;
+  window.addEventListener('wheel', function(e){
+    if (Math.abs(e.deltaY) < 14 || wheelLock) return;
+    var s = slides[index];
+    var room = s.scrollHeight - s.clientHeight > 8;
+    if (room) {
+      var atTop = s.scrollTop <= 2;
+      var atBottom = s.scrollTop + s.clientHeight >= s.scrollHeight - 2;
+      if (!(e.deltaY > 0 && atBottom) && !(e.deltaY < 0 && atTop)) return;
+    }
+    wheelLock = true;
+    step(e.deltaY > 0 ? 1 : -1);
+    window.setTimeout(function(){ wheelLock = false; }, 780);
+  }, { passive: true });
+
+  /* --- swipe --- */
+  var x0 = null, y0 = null;
+  window.addEventListener('touchstart', function(e){
+    x0 = e.touches[0].clientX; y0 = e.touches[0].clientY;
+  }, { passive: true });
+  window.addEventListener('touchend', function(e){
+    if (x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0;
+    var dy = e.changedTouches[0].clientY - y0;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) step(dx < 0 ? 1 : -1);
+    x0 = null; y0 = null;
+  }, { passive: true });
+
+  /* --- taby --- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+  function selectTab(n){
+    tabs.forEach(function(t, i){
+      var on = i === n;
+      t.classList.toggle('is-on', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    panels.forEach(function(p, i){ p.classList.toggle('is-on', i === n); });
+  }
+  tabs.forEach(function(t, i){
+    t.addEventListener('click', function(){ selectTab(i); });
+    t.setAttribute('tabindex', '0');
+    t.addEventListener('keydown', function(e){
+      if (e.key === 'Enter') { e.preventDefault(); selectTab(i); }
+    });
+  });
+
+  /* --- 3D tilt + světlo pod kurzorem --- */
+  if (!reduce && window.matchMedia('(hover:hover)').matches) {
+    document.querySelectorAll('.tilt').forEach(function(el){
+      el.addEventListener('mousemove', function(e){
+        var r = el.getBoundingClientRect();
+        var px = (e.clientX - r.left) / r.width;
+        var py = (e.clientY - r.top) / r.height;
+        el.style.setProperty('--mx', (px * 100) + '%');
+        el.style.setProperty('--my', (py * 100) + '%');
+        el.style.transform = 'perspective(900px) rotateY(' + ((px - .5) * 7).toFixed(2) + 'deg) rotateX(' + ((.5 - py) * 7).toFixed(2) + 'deg) translateZ(6px)';
+        el.style.transition = 'transform .12s linear, border-color .45s cubic-bezier(.16,1,.3,1), box-shadow .45s cubic-bezier(.16,1,.3,1)';
+      });
+      el.addEventListener('mouseleave', function(){
+        el.style.transition = 'transform .7s cubic-bezier(.16,1,.3,1), border-color .45s ease, box-shadow .45s ease';
+        el.style.transform = '';
+      });
+    });
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
